@@ -8,8 +8,8 @@ let game = {
     /** Загрузщик игровых объектов */
     preload() {
         let loadInfoList = [
-            { src: "img/background.png", coords: [0,0] },
-            { src: "img/ball.png", coords: [0,0] },
+            { src: "img/background.png", coords: [0, 0] },
+            { src: "img/ball.png", coords: [50, 50] },
             
         ];
 
@@ -27,27 +27,24 @@ let game = {
 
         Promise.all(loadAll)
             .then(results => {
-                for(let imgObj of results) {
-                    this.ctx.drawImage(imgObj.img, ...imgObj.coords); 
-                }
+                this.render(results);  
             })
             .catch(err => console.log(err));
     },
 
+    /** рендер изображений */
+    render(imgList) {
+        requestAnimationFrame(() => {
+            for(let imgObj of imgList) {
+                this.ctx.drawImage(imgObj.img, ...imgObj.coords); 
+            }
+        });
+    },
+    
+    /** Запуск игры */
     start: function() {
-        
-
-        let background = new Image();
-        background.src = "img/background.png";
-        background.onload = () => {
-            this.ctx.drawImage(background, 0, 0);
-        };
-
-        let ball = new Image();
-        ball.src = "img/ball.png";
-        ball.onload = () => {
-            this.ctx.drawImage(ball, 0, 0);
-        };
+        this.init();
+        this.preload();
     }
 };
 
