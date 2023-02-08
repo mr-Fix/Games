@@ -3,9 +3,9 @@ let game = {
         this.ctx = document.getElementById("mycanvas").getContext("2d");
         let background = new Image();
         background.src = "img/background.png";
-        window.requestAnimationFrame(() => {
+        background.onload = () => {
             this.ctx.drawImage(background, 0, 0);
-        });
+        };
     }
 };
 
