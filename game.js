@@ -1,5 +1,15 @@
 let game = {
 
+    /** контекст канвас */
+    ctx: null,
+
+    /** Изображения игры */
+    loadImgList: [
+        { src: "img/background.png", coords: [0, 0] },
+        { src: "img/ball.png", coords: [50, 50] },
+        
+    ],
+
     /** Инициализация */
     init() {
         this.ctx = document.getElementById("mycanvas").getContext("2d");
@@ -7,13 +17,8 @@ let game = {
 
     /** Загрузщик игровых объектов */
     preload() {
-        let loadInfoList = [
-            { src: "img/background.png", coords: [0, 0] },
-            { src: "img/ball.png", coords: [50, 50] },
-            
-        ];
 
-        let loadAll = loadInfoList.map(loadInfo => new Promise((resolve, reject) => {
+        let loadAll = this.loadImgList.map(loadInfo => new Promise((resolve, reject) => {
             let image = new Image();
             image.src = loadInfo.src;
 
@@ -40,7 +45,7 @@ let game = {
             }
         });
     },
-    
+
     /** Запуск игры */
     start: function() {
         this.init();
