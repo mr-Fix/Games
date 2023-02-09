@@ -2,11 +2,15 @@ let game = {
 
     /** контекст канвас */
     ctx: null,
+
     /** параметры игры */
     gameParams: {
         width: 640,
         height: 360,
     },
+
+    /** чекер запущенной игры */
+    running: true,
 
     /** Объекты игры */
     gameEntities: {
@@ -113,7 +117,9 @@ let game = {
                 } else if (ballTop < worldTop) {
                     this.moveY = this.velocity;
                 } else if (ballBottom > worldtBottom) {
-                    console.log('Вспышка снизу!')
+                    this.parent.running = false;
+                    alert('Вы проиграли!');
+                    window.location.reload();
                 }
             },
 
@@ -131,7 +137,7 @@ let game = {
             /**
              * Логика отскока после соприкосновения с платформой */
             bumpPlatform() {
-                
+
                 if (this.parent.gameEntities.platform.moveX > 0) {
                     this.coords[4] += this.parent.gameEntities.platform.moveX;
                 }
@@ -293,6 +299,7 @@ let game = {
      * Рендер изображений 
      */
     render() {
+        if (!this.running) { return; }
         requestAnimationFrame(() => {
             // обновление данных
             this.update();
