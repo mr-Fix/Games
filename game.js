@@ -56,7 +56,7 @@ let game = {
                 }
 
                 for(let block of this.parent.block.coordsBlock) {
-
+                    if (!block[2]) { continue; }
                     if (this.collide(block, 'block')) { 
         
                         this.bumpBlock(block);
@@ -92,6 +92,7 @@ let game = {
             bumpBlock(block) {
                 // console.log('this => ', this);
                 this.moveY *= -1;
+                block[2] = false;
             },
 
             /**
@@ -242,7 +243,8 @@ let game = {
                 if (key === 'block') {
                     
                     for(let coords of this.gameEntities[key].coordsBlock) {
-                        this.ctx.drawImage(this.gameEntities[key].img, ...coords); 
+                        if (!coords[2]) { continue }
+                        this.ctx.drawImage(this.gameEntities[key].img, coords[0], coords[1]); 
                     }
                     continue; 
                 }
@@ -280,6 +282,7 @@ let game = {
                 coordsBlock.push([
                     this.gameEntities.block.width * j + 65,
                     this.gameEntities.block.height * i + 35,
+                    true,
                 ]) 
             }
         }
