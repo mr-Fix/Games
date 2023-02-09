@@ -44,7 +44,7 @@ let game = {
                 this.coords[4] += moveX;
             },
 
-            /** Метод обновления местоположения */
+            /** Метод обновления */
             update() {
 
                 if (this.moveY) {
@@ -55,13 +55,17 @@ let game = {
                     this.coords[4] += this.moveX;
                 }
 
-                for(let block of this.parent.block.coordsBlock) {
+                for(let block of this.parent.gameEntities.block.coordsBlock) {
                     if (!block[2]) { continue; }
                     if (this.collide(block, 'block')) { 
         
                         this.bumpBlock(block);
                     }
                 }
+
+                // проверка столкновения со стенами
+                this.collideWorldBounds();
+
             },
 
             /**
@@ -74,13 +78,42 @@ let game = {
                 let y = this.coords[5] + this.moveY;
                 if (
                     x + this.coords[2] > block[0]
-                    && x < block[0] + this.parent[name].width
+                    && x < block[0] + this.parent.gameEntities[name].width
                     && y + this.coords[3] > block[1]
-                    && y < block[1] + this.parent[name].height
+                    && y < block[1] + this.parent.gameEntities[name].height
                 ) {
                     return true;
                 } else {
                     return false;
+                }
+            },
+
+            /**
+             * Проверяет столкновение мяча со стенами  */
+            collideWorldBounds() {
+                let x = this.coords[4] + this.moveX;
+                let y = this.coords[5] + this.moveY;
+
+                // параметры мяча
+                let ballLeft = x;
+                let ballRight = ballLeft + this.coords[2];
+                let ballTop = y;
+                let ballBottom = ballTop + this.coords[3];
+
+                // параметры мира
+                let worldLeft = 0;
+                let worldRight = this.parent.gameParams.width;
+                let worldTop = 0;
+                let worldtBottom = this.parent.gameParams.height;
+
+                if (ballLeft < worldLeft) {
+                    this.moveX = this.velocity;
+                } else if (ballRight > worldRight) {
+                    this.moveX = - this.velocity;
+                } else if (ballTop < worldTop) {
+                    this.moveY = this.velocity;
+                } else if (ballBottom > worldtBottom) {
+                    console.log('Вспышка снизу!')
                 }
             },
 
@@ -90,21 +123,24 @@ let game = {
              * @returns 
              */
             bumpBlock(block) {
-                this.moveY = -this.velocity;
-                
+                this.moveY *= -1;
+
                 block[2] = false;
             },
 
             /**
              * Логика отскока после соприкосновения с платформой */
             bumpPlatform() {
-                if (this.moveY < 0) { return; }
 
-                this.moveY = -this.velocity;
+                if (this.moveY > 0) { 
 
-                let touchX = this.coords[4] + this.coords[2] / 2;
+                    this.moveY = -this.velocity;
+    
+                    let touchX = this.coords[4] + this.coords[2] / 2;
+    
+                    this.moveX = this.velocity * this.parent.gameEntities.platform.getTouchOffset(touchX);
+                }
 
-                this.moveX = this.velocity * this.parent.platform.getTouchOffset(touchX);
             },
         },
 
@@ -129,15 +165,15 @@ let game = {
 
                     this.coords[0] += this.moveX;
 
-                    if (!this.parent.ball.start) {
-                        this.parent.ball.updateMoveX(this.moveX);
+                    if (!this.parent.gameEntities.ball.start) {
+                        this.parent.gameEntities.ball.updateMoveX(this.moveX);
                     }
 
                 }
 
-                if (this.parent.ball.collide(this.coords, 'platform')) {
+                if (this.parent.gameEntities.ball.collide(this.coords, 'platform')) {
 
-                    this.parent.ball.bumpPlatform();
+                    this.parent.gameEntities.ball.bumpPlatform();
                 }
             },
 
@@ -183,8 +219,8 @@ let game = {
     /** Инициализация */
     init() {
         // перекрестные ссылки
-        this.gameEntities.ball.parent = this.gameEntities;
-        this.gameEntities.platform.parent = this.gameEntities;
+        this.gameEntities.ball.parent = this;
+        this.gameEntities.platform.parent = this;
 
         this.ctx = document.getElementById("mycanvas").getContext("2d");
         this.setEvents();
