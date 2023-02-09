@@ -16,16 +16,21 @@ let game = {
             coords: [0, 0, 20, 20, 320, 280, 20, 20],
             /** скорость передвижения */
             velocity: 3,
-            /** движение */
+            /** движение Y */
             moveY: 0,
+            /** движение X */
+            moveX: 0,
             /** Чекер начала движения мяча */
             start: false,
 
             /**
-             * Сдивигает мяч на moveX пикселей
+             * Начало движения мяча
+             * @param {number} moveX - число пикселей
              */
-            startMove() {
+            startMove(moveX) {
                 this.moveY = -this.velocity;
+                // this.moveX = this.random(-this.velocity, this.velocity);
+                this.moveX = moveX;
                 this.start = true;
             },
 
@@ -33,15 +38,23 @@ let game = {
              * Сдивигает мяч на moveX пикселей
              * @param {number} moveX - число пикселей
              */
-            moveX(moveX) {
+             updateMoveX(moveX) {
                 this.coords[4] += moveX;
+
             },
 
             /** Метод обновления местоположения */
             update() {
-                if (this.moveY) {
-                    this.coords[5] += this.moveY
 
+                // console.log('this.moveX => ', this.moveX );
+                if (this.moveY) {
+
+                    this.coords[5] += this.moveY;
+                } 
+
+                if (this.moveX) {
+
+                    this.coords[4] += this.moveX;
                 }
             },
         },
@@ -62,7 +75,7 @@ let game = {
                     this.coords[0] += this.moveX;
 
                     if (!gameEntities.ball.start) {
-                        gameEntities.ball.moveX(this.moveX);
+                        gameEntities.ball.updateMoveX(this.moveX);
                     }
 
                 }
@@ -145,9 +158,13 @@ let game = {
      */
     render() {
         requestAnimationFrame(() => {
+            // обновление данных
             this.update();
+
+            // сброс канвас
             this.ctx.clearRect(0, 0, this.gameParams.width, this.gameParams.height);
 
+            // рендер новых обновленных изображений
             for(let key in this.gameEntities) {
 
                 if (key === 'block') {
@@ -160,6 +177,8 @@ let game = {
 
                 this.ctx.drawImage(this.gameEntities[key].img, ...this.gameEntities[key].coords); 
             }
+
+            // рекурсия
             this.render();
         });
     },
@@ -202,7 +221,9 @@ let game = {
             console.log('code => ', e.code);
             if (e.code === 'Space') {
 
-                this.gameEntities.ball.startMove();
+                this.gameEntities.ball.startMove( 
+                    this.random( -this.gameEntities.ball.velocity, this.gameEntities.ball.velocity ) 
+                );
 
             } else if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
     
@@ -217,6 +238,15 @@ let game = {
                 this.gameEntities.platform.stopMove();
             }
         });
+    },
+
+    /**
+     * Генерирует рандомное число в диапазоне от min до max
+     * @param {number} min - минимально допустимое число
+     * @param {number} max - максимально допустимое число
+     */
+    random(min, max) {
+        return Math.floor( Math.random() * (max - min + 1) + min );
     }
 };
 
