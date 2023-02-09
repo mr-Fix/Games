@@ -14,6 +14,15 @@ let game = {
             velocity: 6,
             /** движение */
             moveX: 0,
+
+            /** метод обновления местоположения */
+            update() {
+                // console.log(this)
+                if (this.moveX) {
+
+                    this.coords[0] += this.moveX;
+                }
+            },
         },
         block: { 
             img: null, 
@@ -78,26 +87,28 @@ let game = {
      */
     render() {
         requestAnimationFrame(() => {
+            this.update();
+
             for(let key in this.gameEntity) {
-                if (key === 'platform' && this.gameEntity[key].moveX) {
-
-                    this.gameEntity.platform.coords[0] += this.gameEntity.platform.moveX;
-
-                }
 
                 if (key === 'block') {
                     
                     for(let coords of this.gameEntity[key].activeCoordsBlock) {
                         this.ctx.drawImage(this.gameEntity[key].img, ...coords); 
                     }
-                    continue;
-                    
+                    continue; 
                 }
 
                 this.ctx.drawImage(this.gameEntity[key].img, ...this.gameEntity[key].coords); 
             }
-            // this.render();
+            this.render();
         });
+    },
+
+    /** Обновляет состояние игры */
+    update() {
+        this.gameEntity.platform.update();
+
     },
 
     /** Запуск игры */
@@ -129,22 +140,20 @@ let game = {
         /** событие движения */
         window.addEventListener('keydown', e => {
             if (e.code === 'ArrowLeft') {
-                console.log('left',);
+
                 this.gameEntity.platform.moveX = -this.gameEntity.platform.velocity;
 
             } else if (e.code === 'ArrowRight') {
-                console.log('right',);
-                this.gameEntity.platform.moveX = this.gameEntity.platform.velocity;
 
+                this.gameEntity.platform.moveX = this.gameEntity.platform.velocity;
             }
         });
 
         /** событие остановки двжения */
         window.addEventListener('keyup', e => {
             if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
-                console.log('stop',);
+                
                 this.gameEntity.platform.moveX = 0;
-
             }
         });
     }
