@@ -17,11 +17,31 @@ let game = {
 
             /** метод обновления местоположения */
             update() {
-                // console.log(this)
                 if (this.moveX) {
 
                     this.coords[0] += this.moveX;
                 }
+            },
+
+            /**
+             * Обрабатывает события движение
+             * @param {string} typeEvent - тип события (код кнопки)
+             */
+            handlerMove(typeEvent) {
+
+                if (typeEvent === 'ArrowLeft') {
+
+                    this.moveX = -this.velocity;
+    
+                } else if (typeEvent === 'ArrowRight') {
+    
+                    this.moveX = this.velocity;
+
+                } else if (typeEvent === 'clear') {
+                
+                    this.moveX = 0;
+                }
+                
             },
         },
         block: { 
@@ -36,9 +56,6 @@ let game = {
     },
 
  
-
-
-
     /** Инициализация */
     init() {
         this.ctx = document.getElementById("mycanvas").getContext("2d");
@@ -139,21 +156,15 @@ let game = {
     setEvents() {
         /** событие движения */
         window.addEventListener('keydown', e => {
-            if (e.code === 'ArrowLeft') {
 
-                this.gameEntity.platform.moveX = -this.gameEntity.platform.velocity;
-
-            } else if (e.code === 'ArrowRight') {
-
-                this.gameEntity.platform.moveX = this.gameEntity.platform.velocity;
-            }
+            this.gameEntity.platform.handlerMove(e.code);
         });
 
         /** событие остановки двжения */
         window.addEventListener('keyup', e => {
             if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
                 
-                this.gameEntity.platform.moveX = 0;
+                this.gameEntity.platform.handlerMove('clear');
             }
         });
     }
