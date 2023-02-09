@@ -131,6 +131,10 @@ let game = {
             /**
              * Логика отскока после соприкосновения с платформой */
             bumpPlatform() {
+                
+                if (this.parent.gameEntities.platform.moveX > 0) {
+                    this.coords[4] += this.parent.gameEntities.platform.moveX;
+                }
 
                 if (this.moveY > 0) { 
 
@@ -161,7 +165,7 @@ let game = {
             /** метод обновления местоположения */
             update() {
                 
-                if (this.moveX) {
+                if (this.moveX && !this.collideWorldBounds()) {
 
                     this.coords[0] += this.moveX;
 
@@ -175,6 +179,9 @@ let game = {
 
                     this.parent.gameEntities.ball.bumpPlatform();
                 }
+
+                // проверка на столкновение со стенами
+                // this.collideWorldBounds();
             },
 
             /**
@@ -196,6 +203,25 @@ let game = {
             getTouchOffset(touchX) {
                 let offset = touchX - this.coords[0];
                 return (2 * offset / this.width) - 1;
+            },
+
+            /** Проверяет столкновение платформы со стенами  */
+            collideWorldBounds() {
+                let platformLeft = this.coords[0] + this.moveX;
+                let platformRight = this.coords[0] + this.width + this.moveX;
+
+                if (platformLeft < 0) {
+
+                    this.coords[0] = 0;
+                    return true;
+
+                } else if (platformRight > this.parent.gameParams.width) {
+
+                    this.coords[0] = this.parent.gameParams.width - this.width;
+                    return true;
+
+                }
+                return false;
             },
         },
 
