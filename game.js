@@ -4,24 +4,29 @@ let game = {
     ctx: null,
 
     /** Изображения игры */
-    loadImgList: [
-        { name: "background", coords: [0, 0] },
-        { name: "ball", coords: [0, 0, 20, 20, 320, 280, 20, 20] },
-        { name: "platform", coords: [280, 300] },
-        { name: "block", coords: [100, 100] },
-    ],
-
-    /** Расположение блоков */
-    positonBlocks: {
-        1: { row: 4, col: 8, },
+    imgList: {
+        background: { img: null, coords: [0, 0] },
+        ball: { img: null, coords: [0, 0, 20, 20, 320, 280, 20, 20] },
+        platform: { img: null, coords: [280, 300] },
+        block: { 
+            img: null, 
+            /** Расположение блоков */
+            positonBlocks: {
+                1: { row: 4, col: 8, },
+            },
+            /** массив с координатами блоков */
+            activeCoordsBlock: [],
+        },
     },
 
-    /** массив с координатами блоков */
-    activeCoordsBlock: [],
+ 
+
+
 
     /** Инициализация */
     init() {
         this.ctx = document.getElementById("mycanvas").getContext("2d");
+        this.setEvents();
     },
 
     /**
@@ -29,51 +34,66 @@ let game = {
      */
     preload() {
 
-        let loadAll = this.loadImgList.map(loadInfo => new Promise((resolve, reject) => {
-            let image = new Image();
-            image.src = `img/${loadInfo.name}.png`;
+        let loadAll = [];
 
-            image.addEventListener("load", () => {
-                resolve({ img: image, name: loadInfo.name, coords: loadInfo.coords, });
-            });
+        for (let key in this.imgList) {
 
-            image.addEventListener("error", () => {
-                reject(err);
-            });
-        }));
+            loadAll.push(new Promise((resolve, reject) => {
+                let image = new Image();
+                image.src = `img/${key}.png`;
+    
+                image.addEventListener("load", () => {
+                    resolve({ img: image, name: key, coords: this.imgList[key].coords, });
+                });
+    
+                image.addEventListener("error", () => {
+                    reject(err);
+                });
+            }));
+
+        }
 
         Promise.all(loadAll)
             .then(results => {
-                this.render(results);  
+
+                for(let imgObj of results) {
+                    this.imgList[imgObj.name].img = imgObj.img;
+                }
+
+                this.render(); 
+
             })
             .catch(err => console.log(err));
     },
 
     /**
      * Рендер изображений 
-     * @param {Array} imgList - массив объектов с изображениями
      */
-    render(imgList) {
+    render() {
         requestAnimationFrame(() => {
-            for(let imgObj of imgList) {
+            for(let key in this.imgList) {
 
-                if (imgObj.name === 'block') {
-                    for(let coords of this.activeCoordsBlock) {
-                        this.ctx.drawImage(imgObj.img, ...coords); 
+                if (key === 'block') {
+
+                    for(let coords of this.imgList[key].activeCoordsBlock) {
+                        this.ctx.drawImage(this.imgList[key].img, ...coords); 
                     }
+
                     continue;
                 }
 
-                this.ctx.drawImage(imgObj.img, ...imgObj.coords); 
+                this.ctx.drawImage(this.imgList[key].img, ...this.imgList[key].coords); 
             }
         });
+        // this.render();
     },
 
     /** Запуск игры */
-    start: function() {
+    start() {
         this.init();
         this.createCoordsBlock();
         this.preload();
+
     },
 
     /** Создает координаты для блоков */
@@ -88,9 +108,22 @@ let game = {
                 ]) 
             }
         }
+    },
+
+    /** Устанавливает обработку событий */
+    setEvents() {
+        window.addEventListener('keydown', e => {
+            if (e.code === 'ArrowLeft') {
+                console.log('left',);
+
+            } else if (e.code === 'ArrowRight') {
+                console.log('right',);
+
+            }
+        })
     }
 };
 
-window.addEventListener("load", () => {
+window.addEventListener('load', () => {
     game.start();
 });
