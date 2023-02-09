@@ -99,10 +99,12 @@ let game = {
     /** Создает координаты для блоков */
     createCoordsBlock() {
         this.activeCoordsBlock = [];
-
-        for(let i = 0; i < this.positonBlocks['1'].row; ++i) {
-            for(let j = 0; j < this.positonBlocks['1'].col; ++j) {
-                this.activeCoordsBlock.push([
+        let positonBlocks = this.imgList.block.positonBlocks;
+        let activeCoordsBlock = this.imgList.block.activeCoordsBlock;
+        
+        for(let i = 0; i <positonBlocks['1'].row; ++i) {
+            for(let j = 0; j < positonBlocks['1'].col; ++j) {
+                activeCoordsBlock.push([
                     64 * j + 65,
                     24 * i + 35,
                 ]) 
