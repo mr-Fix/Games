@@ -90,16 +90,17 @@ let game = {
              * @returns 
              */
             bumpBlock(block) {
-                // console.log('this => ', this);
-                this.moveY *= -1;
+                this.moveY = -this.velocity;
+                
                 block[2] = false;
             },
 
             /**
              * Логика отскока после соприкосновения с платформой */
             bumpPlatform() {
+                if (this.moveY < 0) { return; }
 
-                this.moveY *= -1;
+                this.moveY = -this.velocity;
 
                 let touchX = this.coords[4] + this.coords[2] / 2;
 
