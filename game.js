@@ -61,14 +61,14 @@ let game = {
              * @param {Array} block - массив с координатами блока
              * @returns 
              */
-            collide(block) {
+            collide(block, name) {
                 let x = this.coords[4] + this.moveX;
                 let y = this.coords[5] + this.moveY;
                 if (
                     x + this.coords[2] > block[0]
-                    && x < block[0] + this.parent.block.width
+                    && x < block[0] + this.parent[name].width
                     && y + this.coords[3] > block[1]
-                    && y < block[1] + this.parent.block.height
+                    && y < block[1] + this.parent[name].height
                 ) {
                     return true;
                 } else {
@@ -92,6 +92,10 @@ let game = {
             coords: [280, 300],
             /** родитель */
             parent: null,
+            /** ширина */
+            width: 100,
+            /** высота */
+            height: 14,
             /** скорость передвижения */
             velocity: 6,
             /** движение */
@@ -228,10 +232,14 @@ let game = {
 
         for(let block of this.gameEntities.block.coordsBlock) {
 
-            if (this.gameEntities.ball.collide(block)) {
+            if (this.gameEntities.ball.collide(block, 'block')) {
                 // console.log('Попали в блок!!!')
                 this.gameEntities.ball.bumpBlock(block);
             }
+        }
+
+        if (this.gameEntities.ball.collide(this.gameEntities.platform.coords, 'platform')) {
+            console.log('Столкновение!')
         }
     },
 
