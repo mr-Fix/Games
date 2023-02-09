@@ -54,6 +54,14 @@ let game = {
                 if (this.moveX) {
                     this.coords[4] += this.moveX;
                 }
+
+                for(let block of this.parent.block.coordsBlock) {
+
+                    if (this.collide(block, 'block')) { 
+        
+                        this.bumpBlock(block);
+                    }
+                }
             },
 
             /**
@@ -84,7 +92,18 @@ let game = {
             bumpBlock(block) {
                 // console.log('this => ', this);
                 this.moveY *= -1;
-            }
+            },
+
+            /**
+             * Логика отскока после соприкосновения с платформой */
+            bumpPlatform() {
+
+                this.moveY *= -1;
+
+                let touchX = this.coords[4] + this.coords[2] / 2;
+
+                this.moveX = this.velocity * this.parent.platform.getTouchOffset(touchX);
+            },
         },
 
         platform: { 
@@ -102,16 +121,21 @@ let game = {
             moveX: 0,
 
             /** метод обновления местоположения */
-            update(gameEntities) {
+            update() {
                 
                 if (this.moveX) {
 
                     this.coords[0] += this.moveX;
 
-                    if (!gameEntities.ball.start) {
-                        gameEntities.ball.updateMoveX(this.moveX);
+                    if (!this.parent.ball.start) {
+                        this.parent.ball.updateMoveX(this.moveX);
                     }
 
+                }
+
+                if (this.parent.ball.collide(this.coords, 'platform')) {
+
+                    this.parent.ball.bumpPlatform();
                 }
             },
 
@@ -120,14 +144,20 @@ let game = {
              * @param {string} typeEvent - тип события (код кнопки)
              */
             move(typeEvent) {
-
                 this.moveX = typeEvent === 'ArrowLeft' ? -this.velocity : this.velocity;
             },
 
             /** Останавливает движение */
             stopMove() {
-
                 this.moveX = 0;
+            },
+
+            /** метод определяет область касания мяча по платформе
+             * @param {Number} - центр мяча при касании
+             */
+            getTouchOffset(touchX) {
+                let offset = touchX - this.coords[0];
+                return (2 * offset / this.width) - 1;
             },
         },
 
@@ -227,20 +257,8 @@ let game = {
 
     /** Обновляет состояние игры */
     update() {
-        this.gameEntities.platform.update(this.gameEntities);
+        this.gameEntities.platform.update();
         this.gameEntities.ball.update();
-
-        for(let block of this.gameEntities.block.coordsBlock) {
-
-            if (this.gameEntities.ball.collide(block, 'block')) {
-                // console.log('Попали в блок!!!')
-                this.gameEntities.ball.bumpBlock(block);
-            }
-        }
-
-        if (this.gameEntities.ball.collide(this.gameEntities.platform.coords, 'platform')) {
-            console.log('Столкновение!')
-        }
     },
 
     /** Запуск игры */
@@ -271,7 +289,6 @@ let game = {
     setEvents() {
         /** событие движения */
         window.addEventListener('keydown', e => {
-            console.log('code => ', e.code);
             if (e.code === 'Space') {
 
                 this.gameEntities.ball.startMove( 
