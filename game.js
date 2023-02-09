@@ -9,13 +9,35 @@ let game = {
         ball: { 
             img: null, 
             coords: [0, 0, 20, 20, 320, 280, 20, 20],
+            /** скорость передвижения */
+            velocity: 3,
+            /** движение */
+            moveY: 0,
+            /** Чекер начала движения мяча */
+            start: false,
+
+            /**
+             * Сдивигает мяч на moveX пикселей
+             */
+            startMove() {
+                this.moveY = -this.velocity;
+                this.start = true;
+            },
 
             /**
              * Сдивигает мяч на moveX пикселей
              * @param {number} moveX - число пикселей
              */
-            move(moveX) {
+            moveX(moveX) {
                 this.coords[4] += moveX;
+            },
+
+            /** Метод обновления местоположения */
+            update() {
+                if (this.moveY) {
+                    this.coords[5] += this.moveY
+
+                }
             },
         },
 
@@ -33,7 +55,10 @@ let game = {
                 if (this.moveX) {
 
                     this.coords[0] += this.moveX;
-                    gameEntities.ball.move(this.moveX);
+
+                    if (!gameEntities.ball.start) {
+                        gameEntities.ball.moveX(this.moveX);
+                    }
 
                 }
             },
@@ -44,20 +69,12 @@ let game = {
              */
             move(typeEvent) {
 
-                if (typeEvent === 'ArrowLeft') {
-
-                    this.moveX = -this.velocity;
-    
-                } else if (typeEvent === 'ArrowRight') {
-    
-                    this.moveX = this.velocity;
-
-                } 
-
+                this.moveX = typeEvent === 'ArrowLeft' ? -this.velocity : this.velocity;
             },
 
             /** Останавливает движение */
             stopMove() {
+
                 this.moveX = 0;
             },
         },
@@ -144,6 +161,7 @@ let game = {
     /** Обновляет состояние игры */
     update() {
         this.gameEntities.platform.update(this.gameEntities);
+        this.gameEntities.ball.update();
 
     },
 
@@ -175,8 +193,15 @@ let game = {
     setEvents() {
         /** событие движения */
         window.addEventListener('keydown', e => {
+            console.log('code => ', e.code);
+            if (e.code === 'Space') {
 
-            this.gameEntities.platform.move(e.code);
+                this.gameEntities.ball.startMove();
+
+            } else if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
+    
+                this.gameEntities.platform.move(e.code);
+            } 
         });
 
         /** событие остановки двжения */
