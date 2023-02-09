@@ -14,6 +14,8 @@ let game = {
         ball: { 
             img: null, 
             coords: [0, 0, 20, 20, 320, 280, 20, 20],
+            /** родитель */
+            parent: null,
             /** скорость передвижения */
             velocity: 3,
             /** движение Y */
@@ -38,23 +40,37 @@ let game = {
              * Сдивигает мяч на moveX пикселей
              * @param {number} moveX - число пикселей
              */
-             updateMoveX(moveX) {
+            updateMoveX(moveX) {
                 this.coords[4] += moveX;
-
             },
 
             /** Метод обновления местоположения */
             update() {
 
-                // console.log('this.moveX => ', this.moveX );
                 if (this.moveY) {
-
                     this.coords[5] += this.moveY;
                 } 
 
                 if (this.moveX) {
-
                     this.coords[4] += this.moveX;
+                }
+            },
+
+            /**
+             * Проверяет столкновение мяча с блоками
+             * @param {Array} block - массив с координатами блока
+             * @returns 
+             */
+            collide(block) {
+                if (
+                    this.coords[4] + this.coords[2] > block[0]
+                    && this.coords[4] < block[0] + this.parent.block.width
+                    && this.coords[5] + this.coords[3] > block[1]
+                    && this.coords[5] < block[1] + this.parent.block.height
+                ) {
+                    return true;
+                } else {
+                    return false;
                 }
             },
         },
@@ -62,6 +78,8 @@ let game = {
         platform: { 
             img: null, 
             coords: [280, 300],
+            /** родитель */
+            parent: null,
             /** скорость передвижения */
             velocity: 6,
             /** движение */
@@ -99,12 +117,16 @@ let game = {
 
         block: { 
             img: null, 
+            /** ширина */
+            width: 64,
+            /** высота */
+            height: 24,
             /** Расположение блоков */
             positonBlocks: {
                 1: { row: 4, col: 8, },
             },
             /** массив с координатами блоков */
-            activeCoordsBlock: [],
+            coordsBlock: [],
         },
 
     },
@@ -112,6 +134,9 @@ let game = {
  
     /** Инициализация */
     init() {
+        this.gameEntities.ball.parent = this.gameEntities;
+        this.gameEntities.platform.parent = this.gameEntities;
+
         this.ctx = document.getElementById("mycanvas").getContext("2d");
         this.setEvents();
     },
@@ -169,7 +194,7 @@ let game = {
 
                 if (key === 'block') {
                     
-                    for(let coords of this.gameEntities[key].activeCoordsBlock) {
+                    for(let coords of this.gameEntities[key].coordsBlock) {
                         this.ctx.drawImage(this.gameEntities[key].img, ...coords); 
                     }
                     continue; 
@@ -188,6 +213,10 @@ let game = {
         this.gameEntities.platform.update(this.gameEntities);
         this.gameEntities.ball.update();
 
+        // console.log('blocks => ', this.gameEntities.block.coordsBlock)
+        // for(let block of this.gameEntities.block.coordsBlock) {
+        //     this.gameEntities.ball.collide(block);
+        // }
     },
 
     /** Запуск игры */
@@ -200,15 +229,15 @@ let game = {
 
     /** Создает координаты для блоков */
     createCoordsBlock() {
-        this.activeCoordsBlock = [];
+        this.coordsBlock = [];
         let positonBlocks = this.gameEntities.block.positonBlocks;
-        let activeCoordsBlock = this.gameEntities.block.activeCoordsBlock;
+        let coordsBlock = this.gameEntities.block.coordsBlock;
         
-        for(let i = 0; i <positonBlocks['1'].row; ++i) {
+        for(let i = 0; i < positonBlocks['1'].row; ++i) {
             for(let j = 0; j < positonBlocks['1'].col; ++j) {
-                activeCoordsBlock.push([
-                    64 * j + 65,
-                    24 * i + 35,
+                coordsBlock.push([
+                    this.gameEntities.block.width * j + 65,
+                    this.gameEntities.block.height * i + 35,
                 ]) 
             }
         }
