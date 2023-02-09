@@ -2,6 +2,11 @@ let game = {
 
     /** контекст канвас */
     ctx: null,
+    /** параметры игры */
+    gameParams: {
+        width: 640,
+        height: 360,
+    },
 
     /** Объекты игры */
     gameEntities: {
@@ -141,6 +146,7 @@ let game = {
     render() {
         requestAnimationFrame(() => {
             this.update();
+            this.ctx.clearRect(0, 0, this.gameParams.width, this.gameParams.height);
 
             for(let key in this.gameEntities) {
 
