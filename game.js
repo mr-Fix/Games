@@ -3,11 +3,18 @@ let game = {
     /** контекст канвас */
     ctx: null,
 
-    /** Изображения игры */
-    imgList: {
+    /** Объекты игры */
+    gameEntity: {
         background: { img: null, coords: [0, 0] },
         ball: { img: null, coords: [0, 0, 20, 20, 320, 280, 20, 20] },
-        platform: { img: null, coords: [280, 300] },
+        platform: { 
+            img: null, 
+            coords: [280, 300],
+            /** скорость передвижения */
+            velocity: 6,
+            /** движение */
+            moveX: 0,
+        },
         block: { 
             img: null, 
             /** Расположение блоков */
@@ -36,14 +43,14 @@ let game = {
 
         let loadAll = [];
 
-        for (let key in this.imgList) {
+        for (let key in this.gameEntity) {
 
             loadAll.push(new Promise((resolve, reject) => {
                 let image = new Image();
                 image.src = `img/${key}.png`;
     
                 image.addEventListener("load", () => {
-                    resolve({ img: image, name: key, coords: this.imgList[key].coords, });
+                    resolve({ img: image, name: key, coords: this.gameEntity[key].coords, });
                 });
     
                 image.addEventListener("error", () => {
@@ -57,7 +64,7 @@ let game = {
             .then(results => {
 
                 for(let imgObj of results) {
-                    this.imgList[imgObj.name].img = imgObj.img;
+                    this.gameEntity[imgObj.name].img = imgObj.img;
                 }
 
                 this.render(); 
@@ -71,21 +78,26 @@ let game = {
      */
     render() {
         requestAnimationFrame(() => {
-            for(let key in this.imgList) {
+            for(let key in this.gameEntity) {
+                if (key === 'platform' && this.gameEntity[key].moveX) {
 
-                if (key === 'block') {
+                    this.gameEntity.platform.coords[0] += this.gameEntity.platform.moveX;
 
-                    for(let coords of this.imgList[key].activeCoordsBlock) {
-                        this.ctx.drawImage(this.imgList[key].img, ...coords); 
-                    }
-
-                    continue;
                 }
 
-                this.ctx.drawImage(this.imgList[key].img, ...this.imgList[key].coords); 
+                if (key === 'block') {
+                    
+                    for(let coords of this.gameEntity[key].activeCoordsBlock) {
+                        this.ctx.drawImage(this.gameEntity[key].img, ...coords); 
+                    }
+                    continue;
+                    
+                }
+
+                this.ctx.drawImage(this.gameEntity[key].img, ...this.gameEntity[key].coords); 
             }
+            // this.render();
         });
-        // this.render();
     },
 
     /** Запуск игры */
@@ -99,8 +111,8 @@ let game = {
     /** Создает координаты для блоков */
     createCoordsBlock() {
         this.activeCoordsBlock = [];
-        let positonBlocks = this.imgList.block.positonBlocks;
-        let activeCoordsBlock = this.imgList.block.activeCoordsBlock;
+        let positonBlocks = this.gameEntity.block.positonBlocks;
+        let activeCoordsBlock = this.gameEntity.block.activeCoordsBlock;
         
         for(let i = 0; i <positonBlocks['1'].row; ++i) {
             for(let j = 0; j < positonBlocks['1'].col; ++j) {
@@ -114,15 +126,27 @@ let game = {
 
     /** Устанавливает обработку событий */
     setEvents() {
+        /** событие движения */
         window.addEventListener('keydown', e => {
             if (e.code === 'ArrowLeft') {
                 console.log('left',);
+                this.gameEntity.platform.moveX = -this.gameEntity.platform.velocity;
 
             } else if (e.code === 'ArrowRight') {
                 console.log('right',);
+                this.gameEntity.platform.moveX = this.gameEntity.platform.velocity;
 
             }
-        })
+        });
+
+        /** событие остановки двжения */
+        window.addEventListener('keyup', e => {
+            if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
+                console.log('stop',);
+                this.gameEntity.platform.moveX = 0;
+
+            }
+        });
     }
 };
 
