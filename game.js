@@ -4,9 +4,21 @@ let game = {
     ctx: null,
 
     /** Объекты игры */
-    gameEntity: {
+    gameEntities: {
         background: { img: null, coords: [0, 0] },
-        ball: { img: null, coords: [0, 0, 20, 20, 320, 280, 20, 20] },
+        ball: { 
+            img: null, 
+            coords: [0, 0, 20, 20, 320, 280, 20, 20],
+
+            /**
+             * Сдивигает мяч на moveX пикселей
+             * @param {number} moveX - число пикселей
+             */
+            move(moveX) {
+                this.coords[4] += moveX;
+            },
+        },
+
         platform: { 
             img: null, 
             coords: [280, 300],
@@ -16,18 +28,21 @@ let game = {
             moveX: 0,
 
             /** метод обновления местоположения */
-            update() {
+            update(gameEntities) {
+                
                 if (this.moveX) {
 
                     this.coords[0] += this.moveX;
+                    gameEntities.ball.move(this.moveX);
+
                 }
             },
 
             /**
-             * Обрабатывает события движение
+             * Обрабатывает события движения
              * @param {string} typeEvent - тип события (код кнопки)
              */
-            handlerMove(typeEvent) {
+            move(typeEvent) {
 
                 if (typeEvent === 'ArrowLeft') {
 
@@ -37,13 +52,16 @@ let game = {
     
                     this.moveX = this.velocity;
 
-                } else if (typeEvent === 'clear') {
-                
-                    this.moveX = 0;
-                }
-                
+                } 
+
+            },
+
+            /** Останавливает движение */
+            stopMove() {
+                this.moveX = 0;
             },
         },
+
         block: { 
             img: null, 
             /** Расположение блоков */
@@ -53,6 +71,7 @@ let game = {
             /** массив с координатами блоков */
             activeCoordsBlock: [],
         },
+
     },
 
  
@@ -69,14 +88,14 @@ let game = {
 
         let loadAll = [];
 
-        for (let key in this.gameEntity) {
+        for (let key in this.gameEntities) {
 
             loadAll.push(new Promise((resolve, reject) => {
                 let image = new Image();
                 image.src = `img/${key}.png`;
     
                 image.addEventListener("load", () => {
-                    resolve({ img: image, name: key, coords: this.gameEntity[key].coords, });
+                    resolve({ img: image, name: key, coords: this.gameEntities[key].coords, });
                 });
     
                 image.addEventListener("error", () => {
@@ -90,7 +109,7 @@ let game = {
             .then(results => {
 
                 for(let imgObj of results) {
-                    this.gameEntity[imgObj.name].img = imgObj.img;
+                    this.gameEntities[imgObj.name].img = imgObj.img;
                 }
 
                 this.render(); 
@@ -106,17 +125,17 @@ let game = {
         requestAnimationFrame(() => {
             this.update();
 
-            for(let key in this.gameEntity) {
+            for(let key in this.gameEntities) {
 
                 if (key === 'block') {
                     
-                    for(let coords of this.gameEntity[key].activeCoordsBlock) {
-                        this.ctx.drawImage(this.gameEntity[key].img, ...coords); 
+                    for(let coords of this.gameEntities[key].activeCoordsBlock) {
+                        this.ctx.drawImage(this.gameEntities[key].img, ...coords); 
                     }
                     continue; 
                 }
 
-                this.ctx.drawImage(this.gameEntity[key].img, ...this.gameEntity[key].coords); 
+                this.ctx.drawImage(this.gameEntities[key].img, ...this.gameEntities[key].coords); 
             }
             this.render();
         });
@@ -124,7 +143,7 @@ let game = {
 
     /** Обновляет состояние игры */
     update() {
-        this.gameEntity.platform.update();
+        this.gameEntities.platform.update(this.gameEntities);
 
     },
 
@@ -139,8 +158,8 @@ let game = {
     /** Создает координаты для блоков */
     createCoordsBlock() {
         this.activeCoordsBlock = [];
-        let positonBlocks = this.gameEntity.block.positonBlocks;
-        let activeCoordsBlock = this.gameEntity.block.activeCoordsBlock;
+        let positonBlocks = this.gameEntities.block.positonBlocks;
+        let activeCoordsBlock = this.gameEntities.block.activeCoordsBlock;
         
         for(let i = 0; i <positonBlocks['1'].row; ++i) {
             for(let j = 0; j < positonBlocks['1'].col; ++j) {
@@ -157,14 +176,14 @@ let game = {
         /** событие движения */
         window.addEventListener('keydown', e => {
 
-            this.gameEntity.platform.handlerMove(e.code);
+            this.gameEntities.platform.move(e.code);
         });
 
         /** событие остановки двжения */
         window.addEventListener('keyup', e => {
             if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
                 
-                this.gameEntity.platform.handlerMove('clear');
+                this.gameEntities.platform.stopMove();
             }
         });
     }
