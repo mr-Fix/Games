@@ -32,7 +32,9 @@ let game = {
                 moveX: 0,
                 /** Чекер начала движения мяча */
                 start: false,
-    
+                /** кадр анимации мяча */
+                frame: 0,
+
                 /**
                  * Начало движения мяча
                  * @param {number} moveX - число пикселей
@@ -41,6 +43,19 @@ let game = {
                     this.moveY = -this.velocity;
                     this.moveX = moveX;
                     this.start = true;
+
+                    
+                },
+
+                /** запускает анимацию мяча */
+                animate() {
+                    setInterval(() => {
+                        if (this.frame = 3) {
+                            this.frame = 0;
+                        } else {
+                            ++this.frame;
+                        }
+                    }, 100);
                 },
     
                 /**
@@ -63,8 +78,11 @@ let game = {
                     }
     
                     for(let block of this.parent.gameEntities.images.block.coordsBlock) {
+
                         if (!block[2]) { continue; }
+
                         if (this.collide(block, 'block')) { 
+
                             this.parent.gameEntities.sounds.bump.sound.play();
                             
                             this.bumpBlock(block);
@@ -72,7 +90,9 @@ let game = {
                             this.parent.addScore();
                         }
                     }
-    
+                    // обновление кадра мяча
+                    this.coords[0] = this.frame * this.coords[2];
+
                     // проверка столкновения со стенами
                     this.collideWorldBounds();
     
@@ -407,7 +427,7 @@ let game = {
 
                 this.ctx.drawImage(this.gameEntities.images[key].img, ...this.gameEntities.images[key].coords); 
             }
-            this.ctx.fillText(`Score: ${this.score}`, 15, 20);
+            this.ctx.fillText(`Счет: ${this.score}`, 15, 20);
             // рекурсия
             this.render();
         });
