@@ -62,17 +62,29 @@ let game = {
              * @returns 
              */
             collide(block) {
+                let x = this.coords[4] + this.moveX;
+                let y = this.coords[5] + this.moveY;
                 if (
-                    this.coords[4] + this.coords[2] > block[0]
-                    && this.coords[4] < block[0] + this.parent.block.width
-                    && this.coords[5] + this.coords[3] > block[1]
-                    && this.coords[5] < block[1] + this.parent.block.height
+                    x + this.coords[2] > block[0]
+                    && x < block[0] + this.parent.block.width
+                    && y + this.coords[3] > block[1]
+                    && y < block[1] + this.parent.block.height
                 ) {
                     return true;
                 } else {
                     return false;
                 }
             },
+
+            /**
+             * Логика отскока после соприкосновения с блоком
+             * @param {Array} block - массив с координатами блока
+             * @returns 
+             */
+            bumpBlock(block) {
+                // console.log('this => ', this);
+                this.moveY *= -1;
+            }
         },
 
         platform: { 
@@ -134,6 +146,7 @@ let game = {
  
     /** Инициализация */
     init() {
+        // перекрестные ссылки
         this.gameEntities.ball.parent = this.gameEntities;
         this.gameEntities.platform.parent = this.gameEntities;
 
@@ -213,10 +226,13 @@ let game = {
         this.gameEntities.platform.update(this.gameEntities);
         this.gameEntities.ball.update();
 
-        // console.log('blocks => ', this.gameEntities.block.coordsBlock)
-        // for(let block of this.gameEntities.block.coordsBlock) {
-        //     this.gameEntities.ball.collide(block);
-        // }
+        for(let block of this.gameEntities.block.coordsBlock) {
+
+            if (this.gameEntities.ball.collide(block)) {
+                // console.log('Попали в блок!!!')
+                this.gameEntities.ball.bumpBlock(block);
+            }
+        }
     },
 
     /** Запуск игры */
