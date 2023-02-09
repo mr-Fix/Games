@@ -9,6 +9,9 @@ let game = {
         height: 360,
     },
 
+    /** счетчик кол-ва сбитых блоков */
+    score: 0,
+
     /** чекер запущенной игры */
     running: true,
 
@@ -64,6 +67,8 @@ let game = {
                     if (this.collide(block, 'block')) { 
         
                         this.bumpBlock(block);
+
+                        this.parent.addScore();
                     }
                 }
 
@@ -117,9 +122,7 @@ let game = {
                 } else if (ballTop < worldTop) {
                     this.moveY = this.velocity;
                 } else if (ballBottom > worldtBottom) {
-                    this.parent.running = false;
-                    alert('Вы проиграли!');
-                    window.location.reload();
+                    this.parent.reloadGame('Вы проиграли!');
                 }
             },
 
@@ -247,7 +250,24 @@ let game = {
 
     },
 
+    /** Следит за счетом очков */
+    addScore() {
+        ++this.score;
+
+        if (this.score >= this.gameEntities.block.coordsBlock.length) {
+            this.reloadGame('Вы выиграли!');
+        }
+    },
  
+    /** Останавливает игру и перезапускает  
+     * @param {String} message - строка сообщение
+     */
+    reloadGame(message) {
+        this.running = false;
+        alert(message);
+        window.location.reload();
+    },
+
     /** Инициализация */
     init() {
         // перекрестные ссылки
