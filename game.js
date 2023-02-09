@@ -292,6 +292,8 @@ let game = {
         this.gameEntities.images.platform.parent = this;
 
         this.ctx = document.getElementById("mycanvas").getContext("2d");
+        this.ctx.font = "20px Arial";
+        this.ctx.fillStyle = "#fff";
         this.setEvents();
     },
 
@@ -383,6 +385,7 @@ let game = {
      */
     render() {
         if (!this.running) { return; }
+
         requestAnimationFrame(() => {
             // обновление данных
             this.update();
@@ -404,7 +407,7 @@ let game = {
 
                 this.ctx.drawImage(this.gameEntities.images[key].img, ...this.gameEntities.images[key].coords); 
             }
-
+            this.ctx.fillText(`Score: ${this.score}`, 15, 20);
             // рекурсия
             this.render();
         });
