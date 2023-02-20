@@ -1,4 +1,4 @@
-import Utility from './Utillte.js';
+import Utility from './Utility.js';
 import Ball from './gameEntity/Ball.js';
 import Background from './gameEntity/Background.js';
 import Block from './gameEntity/Block.js';
@@ -12,13 +12,18 @@ class Game {
         this.utility = new Utility();
 
         // игровые сущности
-        this.gameEntyti = {
-            ball: new Ball(),
-            background: new Background(),
-            block: new Block(),
-            platform: new Platform(),
+        this.gameEntity = {
+            ball: new Ball(this.utility),
+            background: new Background(this.utility),
+            block: new Block(this.utility),
+            platform: new Platform(this.utility),
         };
 
+        // ширина игрового поля
+        this.areaWidth = 640;
+
+        // высота игрового поля
+        this.areaHeight = 360;
     }
 
     /** Запускает игру */
@@ -26,8 +31,21 @@ class Game {
         this.ctx = document.getElementById("mycanvas").getContext("2d");
         this.ctx.font = "20px Arial";
         this.ctx.fillStyle = "#fff";
+
+        this.loader();
     }
 
+    /** Загружает игровые данные */
+    async loader() {
+        try {
+            for(let entity in this.gameEntity ) {
+                await entity.loadData();
+            }
+        } catch (err) {
+            console.log('ОШибка в методе game => loader > ', err);
+        }
+
+    }
 
 }
 
