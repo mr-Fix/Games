@@ -12,7 +12,7 @@ class Game {
         this.utility = new Utility();
 
         // игровые сущности
-        this.gameEntity = {
+        this.gameEntities = {
             ball: new Ball(this.utility),
             background: new Background(this.utility),
             block: new Block(this.utility),
@@ -38,13 +38,38 @@ class Game {
     /** Загружает игровые данные */
     async loader() {
         try {
-            for(let entity in this.gameEntity ) {
+            for(let entity in this.gameEntities ) {
                 await entity.loadData();
             }
         } catch (err) {
             console.log('ОШибка в методе game => loader > ', err);
         }
 
+    }
+
+    /** Устанавливает обработку событий */
+    setEvents() {
+        /** событие движения */
+        window.addEventListener('keydown', e => {
+            if (e.code === 'Space') {
+
+                this.gameEntities.ball.startMove( 
+                    // this.random( -this.gameEntities.images.ball.velocity, this.gameEntities.images.ball.velocity ) 
+                );
+
+            } else if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
+    
+                this.gameEntities.platform.move(e.code);
+            } 
+        });
+
+        /** событие остановки двжения */
+        window.addEventListener('keyup', e => {
+            if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
+                
+                this.gameEntities.platform.stopMove();
+            }
+        });
     }
 
 }
