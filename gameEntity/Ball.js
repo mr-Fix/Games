@@ -154,7 +154,29 @@ class Ball {
      * @param {number} moveX - число пикселей
      */
     updateMoveX(moveX) {
-        
+
         this.coords[4] += moveX;
+    }
+
+    /**
+     * Проверяет столкновение мяча с блоками
+     * @param {Array} block - массив с координатами блока
+     * @returns 
+     */
+    collide(block, name) {
+
+        let x = this.coords[4] + this.moveX;
+        let y = this.coords[5] + this.moveY;
+
+        if (
+            x + this.coords[2] > block[0]
+            && x < block[0] + this.parent.gameEntities[name].width
+            && y + this.coords[3] > block[1]
+            && y < block[1] + this.parent.gameEntities[name].height
+        ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
