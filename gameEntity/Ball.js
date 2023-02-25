@@ -1,9 +1,12 @@
 /** Класс мяча */
-export default class Ball {
+class Ball {
 
     constructor(utility) {
         // полезные методы
         this.utility = utility;
+
+        // загруженное изображение
+        this.image = null;
 
         // путь до изображения
         this.imagePath = './gameEntity/img/ball.png';
@@ -17,7 +20,7 @@ export default class Ball {
             320, // поместить с оси х
             280, // поместить с оси у
             20,  // поместить на ширину
-            20   // поместить на высоту
+            20,  // поместить на высоту
         ];
 
         //скорость передвижения 
@@ -38,6 +41,12 @@ export default class Ball {
 
     /** Загрузчик необходимых данных */
     async loadData() {
-        this.image = await this.utility.loadImage(this.imagePath);
+        try{
+
+            this.image = await this.utility.loadImage(this.imagePath);
+        } catch (err) {
+            console.log('Ошибка в Ball > loadData > ', err);
+        }
     }
+
 }
