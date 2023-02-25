@@ -1,8 +1,11 @@
 /** Класс платформы */
 class Platform {
-    constructor(utility) {
+    constructor(utility, parent) {
         // полезные методы
         this.utility = utility;
+
+        // родитель (игра)
+        this.parent = parent;
 
         // загруженное изображение
         this.image = null;
@@ -45,7 +48,49 @@ class Platform {
 
     /** Останавливает движение */
     stopMove() {
-        
+
         this.moveX = 0;
+    }
+
+    /** метод обновления местоположения */
+    update() {
+    
+        if (this.moveX && !this.collideWorldBounds()) {
+
+            this.coords[0] += this.moveX;
+
+            if (!this.parent.gameEntities.ball.start) {
+                this.parent.gameEntities.ball.updateMoveX(this.moveX);
+            }
+
+        }
+
+        if (this.parent.gameEntities.ball.collide(this.coords, 'platform')) {
+            // this.parent.gameEntities.sounds.bump.sound.play();
+
+            this.parent.gameEntities.ball.bumpPlatform();
+        }
+
+        // проверка на столкновение со стенами
+        this.collideWorldBounds();
+    }
+
+    /** Проверяет столкновение платформы со стенами  */
+    collideWorldBounds() {
+        let platformLeft = this.coords[0] + this.moveX;
+        let platformRight = this.coords[0] + this.width + this.moveX;
+
+        if (platformLeft < 0) {
+
+            this.coords[0] = 0;
+            return true;
+
+        } else if (platformRight > this.parent.areaWidth) {
+
+            this.coords[0] = this.parent.areaWidth - this.width;
+            return true;
+
+        }
+        return false;
     }
 }
