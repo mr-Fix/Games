@@ -62,7 +62,7 @@ class Ball {
 
         this.start = true;
 
-        // this.animate();
+        this.animate();
     }
 
     /** запускает анимацию мяча */
@@ -90,19 +90,20 @@ class Ball {
             this.coords[4] += this.moveX;
         }
 
-        // for(let block of this.parent.gameEntities.images.block.coordsBlock) {
+        for(let block of this.parent.gameEntities.block.coordsBlock) {
 
-        //     if (!block[2]) { continue; }
+            if (!block[2]) { continue; }
 
-        //     if (this.collide(block, 'block')) { 
+            if (this.collide(block, 'block')) { 
 
-        //         this.parent.gameEntities.sounds.bump.sound.play();
+                // this.parent.gameEntities.sounds.bump.sound.play();
                 
-        //         this.bumpBlock(block);
+                this.bumpBlock(block);
 
-        //         this.parent.addScore();
-        //     }
-        // }
+                this.parent.addScore();
+            }
+        }
+
         // обновление кадра мяча
         this.coords[0] = this.frame * this.coords[2];
 
@@ -145,7 +146,7 @@ class Ball {
 
         } else if (ballBottom > worldtBottom) {
 
-            // this.parent.reloadGame('Вы проиграли!');
+            this.parent.reloadGame('Вы проиграли!');
         }
     }
 
@@ -161,6 +162,7 @@ class Ball {
     /**
      * Проверяет столкновение мяча с блоками
      * @param {Array} block - массив с координатами блока
+     * @param {string} name - строка с названием сущности из gameEntyties
      * @returns 
      */
     collide(block, name) {
