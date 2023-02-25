@@ -45,7 +45,7 @@ class Ball {
 
             this.image = await this.utility.loadImage(this.imagePath);
         } catch (err) {
-            
+
             console.log('Ошибка в Ball > loadData > ', err);
         }
     }
@@ -59,6 +59,20 @@ class Ball {
 
         this.start = true;
 
-        this.animate();
+        // this.animate();
+    }
+
+    /** запускает анимацию мяча */
+    animate() {
+
+        setInterval(() => {
+
+            if (this.frame = 3) {
+                this.frame = 0;
+            } else {
+                ++this.frame;
+            }
+            
+        }, 100);
     }
 }
