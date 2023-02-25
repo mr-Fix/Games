@@ -96,7 +96,7 @@ class Ball {
 
             if (this.collide(block, 'block')) { 
 
-                // this.parent.gameEntities.sounds.bump.sound.play();
+                this.parent.soundEntities.bump.sound.play();
                 
                 this.bumpBlock(block);
 
@@ -132,16 +132,17 @@ class Ball {
 
         if (ballLeft < worldLeft) {
 
-            // this.parent.gameEntities.sounds.bump.sound.play();
+            this.parent.soundEntities.bump.sound.play();
             this.moveX = this.velocity;
 
         } else if (ballRight > worldRight) {
-            // this.parent.gameEntities.sounds.bump.sound.play();
+
+            this.parent.soundEntities.bump.sound.play();
             this.moveX = - this.velocity;
 
         } else if (ballTop < worldTop) {
 
-            // this.parent.gameEntities.sounds.bump.sound.play();
+            this.parent.soundEntities.bump.sound.play();
             this.moveY = this.velocity;
 
         } else if (ballBottom > worldtBottom) {

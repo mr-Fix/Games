@@ -66,7 +66,7 @@ class Platform {
         }
 
         if (this.parent.gameEntities.ball.collide(this.coords, 'platform')) {
-            // this.parent.gameEntities.sounds.bump.sound.play();
+            this.parent.soundEntities.bump.sound.play();
 
             this.parent.gameEntities.ball.bumpPlatform();
         }
