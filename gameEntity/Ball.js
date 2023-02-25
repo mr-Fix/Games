@@ -49,4 +49,15 @@ class Ball {
         }
     }
 
+    /**
+     * Начало движения мяча
+     * @param {number} moveX - число пикселей
+    */
+     startMove(moveX) {
+        this.moveY = -this.velocity;
+        this.moveX = moveX;
+        this.start = true;
+        this.animate();
+
+    }
 }
