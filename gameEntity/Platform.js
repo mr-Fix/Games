@@ -65,11 +65,11 @@ class Platform {
 
         }
 
-        if (this.parent.gameEntities.ball.collide(this.coords, 'platform')) {
-            // this.parent.gameEntities.sounds.bump.sound.play();
+        // if (this.parent.gameEntities.ball.collide(this.coords, 'platform')) {
+        //     // this.parent.gameEntities.sounds.bump.sound.play();
 
-            this.parent.gameEntities.ball.bumpPlatform();
-        }
+        //     this.parent.gameEntities.ball.bumpPlatform();
+        // }
 
         // проверка на столкновение со стенами
         this.collideWorldBounds();
@@ -92,5 +92,16 @@ class Platform {
 
         }
         return false;
+    }
+
+    /** метод определяет область касания мяча по платформе
+     * @param {number} - центр мяча при касании
+     * @return {number}
+     */
+    getTouchOffset(touchX) {
+
+        let offset = touchX - this.coords[0];
+
+        return (2 * offset / this.width) - 1;
     }
 }
