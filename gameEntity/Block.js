@@ -1,9 +1,10 @@
 /** Класс блока */
 class Block {
     constructor(utility, parent) {
+
         // полезные методы
         this.utility = utility;
-        
+
         // родитель (игра)
         this.parent = parent;
 
@@ -29,6 +30,7 @@ class Block {
 
         // заполняем координаты
         this.createCoordsBlock();
+        
     }
 
     /** Загрузчик необходимых данных */

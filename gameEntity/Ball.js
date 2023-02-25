@@ -164,7 +164,7 @@ class Ball {
      * Проверяет столкновение мяча с блоками
      * @param {Array} block - массив с координатами блока
      * @param {string} name - строка с названием сущности из gameEntyties
-     * @returns 
+     * @returns {boolean}
      */
     collide(block, name) {
 
@@ -194,8 +194,7 @@ class Ball {
         block[2] = false;
     }
 
-    /**
-     * Логика отскока после соприкосновения с платформой */
+    /** Логика отскока после соприкосновения с платформой */
     bumpPlatform() {
 
         if (this.parent.gameEntities.platform.moveX > 0) {

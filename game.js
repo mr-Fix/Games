@@ -23,6 +23,7 @@ class Game {
         this.soundEntities = {
             bump: new Bump(this.utility, this),
         };
+
         // ширина игрового поля
         this.areaWidth = 640;
 
@@ -37,12 +38,21 @@ class Game {
 
     /** Запускает игру */
     async start() {
+        
+        this.initGameArea();
+
+        this.setEvents();
+
+        await this.loader();
+
+        this.render();
+    }
+
+    /** Инициализирует игровое поле */
+    initGameArea() {
         this.ctx = document.getElementById("mycanvas").getContext("2d");
         this.ctx.font = "20px Arial";
         this.ctx.fillStyle = "#fff";
-        this.setEvents();
-        await this.loader();
-        this.render();
     }
 
     /** Загружает игровые данные */
@@ -58,7 +68,7 @@ class Game {
             for(let entity in this.soundEntities ) {
                 await  this.soundEntities[entity].loadData();
             }
-            
+
         } catch (err) {
             console.log('ОШибка в методе game => loader > ', err);
         }
@@ -80,7 +90,7 @@ class Game {
             } 
         });
 
-        /** событие остановки двжения */
+        /** событие остановки движения */
         window.addEventListener('keyup', e => {
             if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
                 

@@ -1,5 +1,6 @@
 /** Класс платформы */
 class Platform {
+    
     constructor(utility, parent) {
         // полезные методы
         this.utility = utility;

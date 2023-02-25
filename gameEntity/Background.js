@@ -1,6 +1,7 @@
 /** Класс фона */
 class Background {
     constructor(utility, parent) {
+
         // полезные методы
         this.utility = utility;
         
@@ -18,6 +19,7 @@ class Background {
             0, // поместить с оси х
             0, // поместить с оси y
         ];
+        
     }
 
     /** Загрузчик необходимых данных */

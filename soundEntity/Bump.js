@@ -1,7 +1,9 @@
 
 /** Класс звук удара */
 class Bump {
+
     constructor(utility, parent) {
+
         // полезные методы
         this.utility = utility;
 
@@ -13,6 +15,7 @@ class Bump {
 
         // путь до звука
         this.soundPath = './soundEntity/sounds/bump.mp3';
+        
     }
 
     /** Загрузчик необходимых данных */
