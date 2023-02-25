@@ -1,8 +1,11 @@
 /** Класс фона */
 class Background {
-    constructor(utility) {
+    constructor(utility, parent) {
         // полезные методы
         this.utility = utility;
+        
+        // родитель (игра)
+        this.parent = parent;
 
         // загруженное изображение
         this.image = null;
