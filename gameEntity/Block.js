@@ -1,8 +1,11 @@
 /** Класс блока */
-export default class Block {
+class Block {
     constructor(utility) {
         // полезные методы
         this.utility = utility;
+
+        // загруженное изображение
+        this.image = null;
 
         // путь до изображения
         this.imagePath = './gameEntity/img/block.png';
@@ -40,8 +43,8 @@ export default class Block {
             for(let j = 0; j < this.positonBlocks['1'].col; ++j) {
 
                 this.coordsBlock.push([
-                    this.gameEntities.images.block.width * j + 65,
-                    this.gameEntities.images.block.height * i + 35,
+                    this.width * j + 65,
+                    this.height * i + 35,
                     true,
                 ]);
             }

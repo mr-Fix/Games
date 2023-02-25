@@ -1,5 +1,5 @@
 /** Класс платформы */
-export default class Platform {
+class Platform {
     constructor(utility) {
         // полезные методы
         this.utility = utility;
@@ -24,7 +24,7 @@ export default class Platform {
 
         // скорость передвижения
         this.velocity = 6;
-        
+
         // движение
         this.moveX = 0;
     }

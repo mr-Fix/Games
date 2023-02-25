@@ -1,5 +1,5 @@
 /** Класс фона */
-export default class Background {
+class Background {
     constructor(utility) {
         // полезные методы
         this.utility = utility;
