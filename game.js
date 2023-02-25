@@ -34,7 +34,7 @@ class Game {
         this.ctx = document.getElementById("mycanvas").getContext("2d");
         this.ctx.font = "20px Arial";
         this.ctx.fillStyle = "#fff";
-
+        this.setEvents();
         await this.loader();
         this.render();
     }
@@ -53,6 +53,7 @@ class Game {
 
     /** Устанавливает обработку событий */
     setEvents() {
+
         /** событие движения */
         window.addEventListener('keydown', e => {
             if (e.code === 'Space') {
@@ -102,8 +103,14 @@ class Game {
            
             this.ctx.fillText(`Счет: ${this.score}`, 15, 20);
             // рекурсия
-            // this.render();
+            this.render();
         });
+    }
+
+    /** Обновляет состояние игры */
+    update() {
+        this.gameEntities.platform.update();
+        this.gameEntities.ball.update();
     }
 }
 
