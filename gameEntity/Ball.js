@@ -187,7 +187,26 @@ class Ball {
     bumpBlock(block) {
 
         this.moveY *= -1;
-        
+
         block[2] = false;
+    }
+
+    /**
+     * Логика отскока после соприкосновения с платформой */
+    bumpPlatform() {
+
+        if (this.parent.gameEntities.platform.moveX > 0) {
+            this.coords[4] += this.parent.gameEntities.platform.moveX;
+        }
+
+        if (this.moveY > 0) { 
+
+            this.moveY = -this.velocity;
+
+            let touchX = this.coords[4] + this.coords[2] / 2;
+
+            this.moveX = this.velocity * this.parent.gameEntities.platform.getTouchOffset(touchX);
+        }
+
     }
 }
