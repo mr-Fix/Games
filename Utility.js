@@ -30,4 +30,29 @@ class Utility {
         });
         
     }
+
+    /**
+     * Загружает звук по переданному path
+     * @param {string} path - путь до звукового файла
+     * @returns {object} - объект звука или ошибки
+     */
+    loadSound(path) {
+
+        return new Promise((resolve, reject) => {
+
+            let audio = new Audio();
+            audio.src = path;
+
+            audio.addEventListener(
+                "canplaythrough", 
+                () => { resolve(audio); },
+                { once: true }
+            );
+
+            audio.addEventListener("error", (err) => {
+                reject(err);
+            });
+        });
+        
+    }
 }
