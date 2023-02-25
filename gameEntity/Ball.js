@@ -72,7 +72,39 @@ class Ball {
             } else {
                 ++this.frame;
             }
-            
+
         }, 100);
+    }
+
+    /** Метод обновления */
+    update() {
+
+        if (this.moveY) {
+            this.coords[5] += this.moveY;
+        } 
+
+        if (this.moveX) {
+            this.coords[4] += this.moveX;
+        }
+
+        // for(let block of this.parent.gameEntities.images.block.coordsBlock) {
+
+        //     if (!block[2]) { continue; }
+
+        //     if (this.collide(block, 'block')) { 
+
+        //         this.parent.gameEntities.sounds.bump.sound.play();
+                
+        //         this.bumpBlock(block);
+
+        //         this.parent.addScore();
+        //     }
+        // }
+        // обновление кадра мяча
+        this.coords[0] = this.frame * this.coords[2];
+
+        // проверка столкновения со стенами
+        this.collideWorldBounds();
+
     }
 }
