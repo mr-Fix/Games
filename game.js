@@ -57,9 +57,7 @@ class Game {
         window.addEventListener('keydown', e => {
             if (e.code === 'Space') {
 
-                this.gameEntities.ball.startMove( 
-                    // this.random( -this.gameEntities.images.ball.velocity, this.gameEntities.images.ball.velocity ) 
-                );
+                this.gameEntities.ball.startMove();
 
             } else if (e.code === 'ArrowLeft' || e.code === 'ArrowRight') {
     
