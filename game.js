@@ -19,6 +19,10 @@ class Game {
             ball: new Ball(this.utility, this),
         };
 
+        // звуковые объекты
+        this.soundEntities = {
+            bump: new Bump(this.utility, this),
+        };
         // ширина игрового поля
         this.areaWidth = 640;
 
@@ -27,6 +31,8 @@ class Game {
 
         //счетчик кол-ва сбитых блоков
         this.score = 0;
+        // чекер запущенной игры
+        this.running  = true;
     }
 
     /** Запускает игру */
@@ -42,9 +48,17 @@ class Game {
     /** Загружает игровые данные */
     async loader() {
         try {
+
+            // загрузка изображений
             for(let entity in this.gameEntities ) {
                 await  this.gameEntities[entity].loadData();
             }
+
+            // загрузка звуков
+            for(let entity in this.soundEntities ) {
+                await  this.soundEntities[entity].loadData();
+            }
+            
         } catch (err) {
             console.log('ОШибка в методе game => loader > ', err);
         }
@@ -77,7 +91,7 @@ class Game {
 
     /**  Рендер изображений  */
     render() {
-        // if (!this.running) { return; }
+        if (!this.running) { return; }
 
         requestAnimationFrame(() => {
             // обновление данных
@@ -126,7 +140,7 @@ class Game {
      * @param {String} message - строка сообщение
      */
     reloadGame(message) {
-        
+
         this.running = false;
         alert(message);
         window.location.reload();
