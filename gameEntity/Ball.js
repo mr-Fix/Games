@@ -179,4 +179,15 @@ class Ball {
             return false;
         }
     }
+
+    /**
+     * Логика отскока после соприкосновения с блоком
+     * @param {Array} block - массив с координатами блока
+     */
+    bumpBlock(block) {
+
+        this.moveY *= -1;
+        
+        block[2] = false;
+    }
 }
