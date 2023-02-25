@@ -45,19 +45,20 @@ class Ball {
 
             this.image = await this.utility.loadImage(this.imagePath);
         } catch (err) {
+            
             console.log('Ошибка в Ball > loadData > ', err);
         }
     }
 
-    /**
-     * Начало движения мяча
-     * @param {number} moveX - число пикселей
-    */
+    /** Начало движения мяча */
      startMove(moveX) {
+        
         this.moveY = -this.velocity;
-        this.moveX = moveX;
-        this.start = true;
-        this.animate();
 
+        this.moveX = this.utility.random(-this.velocity, this.velocity);
+
+        this.start = true;
+
+        this.animate();
     }
 }
