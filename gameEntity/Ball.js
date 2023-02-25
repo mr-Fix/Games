@@ -1,9 +1,12 @@
 /** Класс мяча */
 class Ball {
 
-    constructor(utility) {
+    constructor(utility, parent) {
         // полезные методы
         this.utility = utility;
+
+        // родитель (игра)
+        this.parent = parent;
 
         // загруженное изображение
         this.image = null;
@@ -51,7 +54,7 @@ class Ball {
     }
 
     /** Начало движения мяча */
-     startMove(moveX) {
+     startMove() {
         
         this.moveY = -this.velocity;
 
@@ -106,5 +109,52 @@ class Ball {
         // проверка столкновения со стенами
         this.collideWorldBounds();
 
+    }
+
+    /**
+     * Проверяет столкновение мяча со стенами  */
+    collideWorldBounds() {
+        let x = this.coords[4] + this.moveX;
+        let y = this.coords[5] + this.moveY;
+
+        // параметры мяча
+        let ballLeft = x;
+        let ballRight = ballLeft + this.coords[2];
+        let ballTop = y;
+        let ballBottom = ballTop + this.coords[3];
+
+        // параметры мира
+        let worldLeft = 0;
+        let worldRight = this.parent.areaWidth;
+        let worldTop = 0;
+        let worldtBottom = this.parent.areaHeight;
+
+        if (ballLeft < worldLeft) {
+
+            // this.parent.gameEntities.sounds.bump.sound.play();
+            this.moveX = this.velocity;
+
+        } else if (ballRight > worldRight) {
+            // this.parent.gameEntities.sounds.bump.sound.play();
+            this.moveX = - this.velocity;
+
+        } else if (ballTop < worldTop) {
+
+            // this.parent.gameEntities.sounds.bump.sound.play();
+            this.moveY = this.velocity;
+
+        } else if (ballBottom > worldtBottom) {
+
+            // this.parent.reloadGame('Вы проиграли!');
+        }
+    }
+
+    /**
+     * Сдивигает мяч на moveX пикселей
+     * @param {number} moveX - число пикселей
+     */
+    updateMoveX(moveX) {
+        
+        this.coords[4] += moveX;
     }
 }
