@@ -1,5 +1,5 @@
 
-export default class Utility {
+class Utility {
     /**
      * Генерирует рандомное число в диапазоне от min до max
      * @param {number} min - минимально допустимое число
@@ -14,7 +14,7 @@ export default class Utility {
      * @param {string} path - путь до изображения
      * @returns {object} - объект изображения или ошибки
      */
-    loadImages(path) {
+    loadImage(path) {
 
         return new Promise((resolve, reject) => {
             let image = new Image();
