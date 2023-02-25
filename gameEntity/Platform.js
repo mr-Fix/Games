@@ -33,4 +33,19 @@ class Platform {
     async loadData() {
         this.image = await this.utility.loadImage(this.imagePath);
     }
+
+    /**
+     * Обрабатывает события движения
+     * @param {string} typeEvent - тип события (код кнопки)
+     */
+    move(typeEvent) {
+
+        this.moveX = typeEvent === 'ArrowLeft' ? -this.velocity : this.velocity;
+    }
+
+    /** Останавливает движение */
+    stopMove() {
+        
+        this.moveX = 0;
+    }
 }
