@@ -13,10 +13,10 @@ class Game {
 
         // игровые сущности
         this.gameEntities = {
-            background: new Background(this.utility),
-            block: new Block(this.utility),
-            platform: new Platform(this.utility),
-            ball: new Ball(this.utility),
+            background: new Background(this.utility, this),
+            block: new Block(this.utility, this),
+            platform: new Platform(this.utility, this),
+            ball: new Ball(this.utility, this),
         };
 
         // ширина игрового поля
@@ -81,7 +81,7 @@ class Game {
 
         requestAnimationFrame(() => {
             // обновление данных
-            // this.update();
+            this.update();
 
             // сброс канвас
             this.ctx.clearRect(0, 0, this.areaWidth, this.areaHeight);
@@ -111,6 +111,25 @@ class Game {
     update() {
         this.gameEntities.platform.update();
         this.gameEntities.ball.update();
+    }
+
+    /** Следит за счетом очков */
+    addScore() {
+        ++this.score;
+
+        if (this.score >= this.gameEntities.block.coordsBlock.length) {
+            this.reloadGame('Вы выиграли!');
+        }
+    }
+
+    /** Останавливает игру и перезапускает  
+     * @param {String} message - строка сообщение
+     */
+    reloadGame(message) {
+        
+        this.running = false;
+        alert(message);
+        window.location.reload();
     }
 }
 
